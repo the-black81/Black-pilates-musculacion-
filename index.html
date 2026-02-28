@@ -5,56 +5,80 @@
 <title>Temporizador del Ratón</title>
 <style>
   body { background:#111; color:white; font-family:Arial; text-align:center; padding:20px; }
-  #cake { font-size:40px; margin:20px; }
-  #mouse { font-size:60px; }
-  button { padding:10px 20px; font-size:18px; }
+  h1 { margin-bottom:10px; }
+  .buttons { margin:20px 0; }
+  .buttons button {
+    background:#ffcc00;
+    border:none;
+    padding:12px 20px;
+    margin:8px;
+    font-size:18px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .buttons button:hover { background:#ffdd33; }
+  #mouse { font-size:70px; margin:20px; }
+  #cheese { font-size:50px; margin:20px; }
+  #countdown { font-size:28px; margin-top:20px; }
 </style>
 </head>
 
 <body>
 
-<h1>Temporizador del Ratón 🐭🍰</h1>
+<h1>Temporizador del Ratón 🐭🧀</h1>
 
-<p>Introduce el tiempo en segundos:</p>
-<input id="timeInput" type="number" value="60" min="5" style="font-size:20px; padding:5px;">
-<br><br>
-<button onclick="startTimer()">Iniciar</button>
+<p>Elige un tiempo:</p>
 
-<h2 id="countdown"></h2>
+<div class="buttons">
+  <button onclick="startTimer(5)">5 min</button>
+  <button onclick="startTimer(10)">10 min</button>
+  <button onclick="startTimer(15)">15 min</button>
+  <button onclick="startTimer(20)">20 min</button>
+  <button onclick="startTimer(25)">25 min</button>
+  <button onclick="startTimer(30)">30 min</button>
+  <button onclick="startTimer(45)">45 min</button>
+  <button onclick="startTimer(60)">60 min</button>
+</div>
 
 <div id="mouse">🐭</div>
-<div id="cake"></div>
+<div id="cheese"></div>
+<div id="countdown"></div>
 
 <script>
 let interval;
 
-function startTimer() {
+function startTimer(minutes) {
   clearInterval(interval);
 
-  let total = parseInt(document.getElementById("timeInput").value);
-  let remaining = total;
+  let totalSeconds = minutes * 60;
+  let remaining = totalSeconds;
 
-  // Dividimos el pastel en 6 trozos
+  // Queso dividido en 6 porciones
   let slices = 6;
-  let sliceTime = total / slices;
+  let sliceTime = totalSeconds / slices;
 
-  let cakeDiv = document.getElementById("cake");
-  cakeDiv.innerHTML = "🍰".repeat(slices);
+  let cheeseDiv = document.getElementById("cheese");
+  cheeseDiv.innerHTML = "🧀".repeat(slices);
 
   interval = setInterval(() => {
     remaining--;
-    document.getElementById("countdown").innerText = remaining + " segundos";
 
-    // Cada vez que pasa el tiempo de un trozo, quitamos uno
-    let eaten = Math.floor((total - remaining) / sliceTime);
+    // Mostrar cuenta atrás en formato mm:ss
+    let m = Math.floor(remaining / 60);
+    let s = remaining % 60;
+    document.getElementById("countdown").innerText =
+      m + "m " + (s < 10 ? "0" + s : s) + "s";
+
+    // Comer porciones
+    let eaten = Math.floor((totalSeconds - remaining) / sliceTime);
     let left = slices - eaten;
     if (left < 0) left = 0;
 
-    cakeDiv.innerHTML = "🍰".repeat(left);
+    cheeseDiv.innerHTML = "🧀".repeat(left);
 
     if (remaining <= 0) {
       clearInterval(interval);
-      document.getElementById("countdown").innerText = "¡El ratón se lo comió todo!";
+      document.getElementById("countdown").innerText = "¡El ratón se comió todo el queso!";
     }
   }, 1000);
 }
