@@ -3,23 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <title>Temporizador del Ratón</title>
+
 <style>
-  body { background:#111; color:white; font-family:Arial; text-align:center; padding:20px; }
+  body {
+    background:#222;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+  }
+
   h1 { margin-bottom:10px; }
-  .buttons { margin:20px 0; }
-  .buttons button {
-    background:#ffcc00;
+
+  .cheese-buttons {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:15px;
+    margin:20px 0;
+  }
+
+  .cheese-btn {
+    width:120px;
+    height:120px;
+    background:url('images/cheese1.png') no-repeat center/cover;
     border:none;
-    padding:12px 20px;
-    margin:8px;
-    font-size:18px;
-    border-radius:10px;
+    border-radius:50%;
+    font-size:22px;
+    font-weight:bold;
+    color:#000;
     cursor:pointer;
   }
-  .buttons button:hover { background:#ffdd33; }
-  #mouse { font-size:70px; margin:20px; }
-  #cheese { font-size:50px; margin:20px; }
-  #countdown { font-size:28px; margin-top:20px; }
+
+  #mouse {
+    width:150px;
+    margin:20px auto;
+    animation: move 1s infinite alternate;
+  }
+
+  @keyframes move {
+    from { transform:translateX(-10px); }
+    to   { transform:translateX(10px); }
+  }
+
+  #cheese-area {
+    margin-top:20px;
+  }
+
+  .slice {
+    width:120px;
+    display:inline-block;
+  }
+
+  #countdown {
+    font-size:28px;
+    margin-top:20px;
+  }
 </style>
 </head>
 
@@ -29,19 +68,21 @@
 
 <p>Elige un tiempo:</p>
 
-<div class="buttons">
-  <button onclick="startTimer(5)">5 min</button>
-  <button onclick="startTimer(10)">10 min</button>
-  <button onclick="startTimer(15)">15 min</button>
-  <button onclick="startTimer(20)">20 min</button>
-  <button onclick="startTimer(25)">25 min</button>
-  <button onclick="startTimer(30)">30 min</button>
-  <button onclick="startTimer(45)">45 min</button>
-  <button onclick="startTimer(60)">60 min</button>
+<div class="cheese-buttons">
+  <button class="cheese-btn" onclick="startTimer(5)">5</button>
+  <button class="cheese-btn" onclick="startTimer(10)">10</button>
+  <button class="cheese-btn" onclick="startTimer(15)">15</button>
+  <button class="cheese-btn" onclick="startTimer(20)">20</button>
+  <button class="cheese-btn" onclick="startTimer(25)">25</button>
+  <button class="cheese-btn" onclick="startTimer(30)">30</button>
+  <button class="cheese-btn" onclick="startTimer(45)">45</button>
+  <button class="cheese-btn" onclick="startTimer(60)">60</button>
 </div>
 
-<div id="mouse">🐭</div>
-<div id="cheese"></div>
+<img id="mouse" src="images/mouse.png">
+
+<div id="cheese-area"></div>
+
 <div id="countdown"></div>
 
 <script>
@@ -53,32 +94,39 @@ function startTimer(minutes) {
   let totalSeconds = minutes * 60;
   let remaining = totalSeconds;
 
-  // Queso dividido en 6 porciones
   let slices = 6;
   let sliceTime = totalSeconds / slices;
 
-  let cheeseDiv = document.getElementById("cheese");
-  cheeseDiv.innerHTML = "🧀".repeat(slices);
+  let cheeseArea = document.getElementById("cheese-area");
+  cheeseArea.innerHTML = "";
+
+  for (let i = 1; i <= slices; i++) {
+    let img = document.createElement("img");
+    img.src = "images/cheese" + i + ".png";
+    img.className = "slice";
+    img.id = "slice" + i;
+    cheeseArea.appendChild(img);
+  }
 
   interval = setInterval(() => {
     remaining--;
 
-    // Mostrar cuenta atrás en formato mm:ss
     let m = Math.floor(remaining / 60);
     let s = remaining % 60;
     document.getElementById("countdown").innerText =
       m + "m " + (s < 10 ? "0" + s : s) + "s";
 
-    // Comer porciones
     let eaten = Math.floor((totalSeconds - remaining) / sliceTime);
-    let left = slices - eaten;
-    if (left < 0) left = 0;
 
-    cheeseDiv.innerHTML = "🧀".repeat(left);
+    for (let i = 1; i <= eaten; i++) {
+      let slice = document.getElementById("slice" + i);
+      if (slice) slice.style.opacity = "0";
+    }
 
     if (remaining <= 0) {
       clearInterval(interval);
-      document.getElementById("countdown").innerText = "¡El ratón se comió todo el queso!";
+      document.getElementById("countdown").innerText =
+        "¡El ratón se comió todo el queso!";
     }
   }, 1000);
 }
