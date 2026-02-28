@@ -2,52 +2,63 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Pilates</title>
+<title>Temporizador del Ratón</title>
 <style>
-  body { margin:0; font-family: Arial; background:#111; color:white; }
-  header { background:#222; padding:20px; text-align:center; }
-  a { color:white; text-decoration:none; }
-  .video { margin:20px auto; width:90%; max-width:600px; }
+  body { background:#111; color:white; font-family:Arial; text-align:center; padding:20px; }
+  #cake { font-size:40px; margin:20px; }
+  #mouse { font-size:60px; }
+  button { padding:10px 20px; font-size:18px; }
 </style>
 </head>
 
 <body>
-<header>
-  <h1>Vídeos de Pilates</h1>
-  <a href="index.html">⬅ Volver</a>
-</header>
 
-<!-- VIDEO 1 -->
-<div class="video">
-  <iframe width="100%" height="315"
-  src="https://www.youtube.com/embed/U_b4jsAK644"
-  title="YouTube video player"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen></iframe>
-</div>
+<h1>Temporizador del Ratón 🐭🍰</h1>
 
-<!-- VIDEO 2 -->
-<div class="video">
-  <iframe width="100%" height="315"
-  src="https://www.youtube.com/embed/kfb6FSIEboI"
-  title="YouTube video player"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen></iframe>
-</div>
+<p>Introduce el tiempo en segundos:</p>
+<input id="timeInput" type="number" value="60" min="5" style="font-size:20px; padding:5px;">
+<br><br>
+<button onclick="startTimer()">Iniciar</button>
 
-  <!-- VIDEO 3 -->
-<div class="video">
-  <iframe width="100%" height="315"
-  src="https://www.youtube.com/watch?v=TnVLqL6gTrM"
-  title="YouTube video player"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen></iframe>
-</div>
+<h2 id="countdown"></h2>
 
+<div id="mouse">🐭</div>
+<div id="cake"></div>
 
+<script>
+let interval;
+
+function startTimer() {
+  clearInterval(interval);
+
+  let total = parseInt(document.getElementById("timeInput").value);
+  let remaining = total;
+
+  // Dividimos el pastel en 6 trozos
+  let slices = 6;
+  let sliceTime = total / slices;
+
+  let cakeDiv = document.getElementById("cake");
+  cakeDiv.innerHTML = "🍰".repeat(slices);
+
+  interval = setInterval(() => {
+    remaining--;
+    document.getElementById("countdown").innerText = remaining + " segundos";
+
+    // Cada vez que pasa el tiempo de un trozo, quitamos uno
+    let eaten = Math.floor((total - remaining) / sliceTime);
+    let left = slices - eaten;
+    if (left < 0) left = 0;
+
+    cakeDiv.innerHTML = "🍰".repeat(left);
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      document.getElementById("countdown").innerText = "¡El ratón se lo comió todo!";
+    }
+  }, 1000);
+}
+</script>
 
 </body>
 </html>
