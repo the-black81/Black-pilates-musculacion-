@@ -6,16 +6,20 @@
 
 <style>
   body {
-    background:#222;
-    color:white;
-    font-family:Arial;
+    background:#fffae6;
+    color:#333;
+    font-family:Comic Sans MS, Arial;
     text-align:center;
     padding:20px;
   }
 
-  h1 { margin-bottom:10px; }
+  h1 {
+    font-size:40px;
+    color:#ff9900;
+    text-shadow:2px 2px #fff;
+  }
 
-  .cheese-buttons {
+  .buttons {
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
@@ -23,65 +27,66 @@
     margin:20px 0;
   }
 
-  .cheese-btn {
-    width:120px;
-    height:120px;
-    background:url('images/cheese1.png') no-repeat center/cover;
-    border:none;
-    border-radius:50%;
+  .buttons button {
+    background:#ffe066;
+    border:3px solid #ffcc00;
+    padding:15px 25px;
     font-size:22px;
-    font-weight:bold;
-    color:#000;
+    border-radius:15px;
     cursor:pointer;
+    font-weight:bold;
+    box-shadow:3px 3px #d4b100;
+  }
+
+  .buttons button:hover {
+    background:#ffdd66;
   }
 
   #mouse {
-    width:150px;
-    margin:20px auto;
-    animation: move 1s infinite alternate;
+    font-size:80px;
+    margin:20px;
+    animation: mover 1s infinite alternate;
   }
 
-  @keyframes move {
+  @keyframes mover {
     from { transform:translateX(-10px); }
     to   { transform:translateX(10px); }
   }
 
-  #cheese-area {
-    margin-top:20px;
-  }
-
-  .slice {
-    width:120px;
-    display:inline-block;
+  #cheese {
+    font-size:60px;
+    margin:20px;
+    letter-spacing:10px;
   }
 
   #countdown {
-    font-size:28px;
+    font-size:30px;
     margin-top:20px;
+    color:#cc6600;
   }
 </style>
 </head>
 
 <body>
 
-<h1>Temporizador del Ratón 🐭🧀</h1>
+<h1>🐭 Temporizador del Ratón 🧀</h1>
 
-<p>Elige un tiempo:</p>
+<p style="font-size:22px;">Elige un tiempo:</p>
 
-<div class="cheese-buttons">
-  <button class="cheese-btn" onclick="startTimer(5)">5</button>
-  <button class="cheese-btn" onclick="startTimer(10)">10</button>
-  <button class="cheese-btn" onclick="startTimer(15)">15</button>
-  <button class="cheese-btn" onclick="startTimer(20)">20</button>
-  <button class="cheese-btn" onclick="startTimer(25)">25</button>
-  <button class="cheese-btn" onclick="startTimer(30)">30</button>
-  <button class="cheese-btn" onclick="startTimer(45)">45</button>
-  <button class="cheese-btn" onclick="startTimer(60)">60</button>
+<div class="buttons">
+  <button onclick="startTimer(5)">5 min</button>
+  <button onclick="startTimer(10)">10 min</button>
+  <button onclick="startTimer(15)">15 min</button>
+  <button onclick="startTimer(20)">20 min</button>
+  <button onclick="startTimer(25)">25 min</button>
+  <button onclick="startTimer(30)">30 min</button>
+  <button onclick="startTimer(45)">45 min</button>
+  <button onclick="startTimer(60)">60 min</button>
 </div>
 
-<img id="mouse" src="images/mouse.png">
+<div id="mouse">🐭</div>
 
-<div id="cheese-area"></div>
+<div id="cheese">🧀🧀🧀🧀🧀🧀</div>
 
 <div id="countdown"></div>
 
@@ -97,16 +102,8 @@ function startTimer(minutes) {
   let slices = 6;
   let sliceTime = totalSeconds / slices;
 
-  let cheeseArea = document.getElementById("cheese-area");
-  cheeseArea.innerHTML = "";
-
-  for (let i = 1; i <= slices; i++) {
-    let img = document.createElement("img");
-    img.src = "images/cheese" + i + ".png";
-    img.className = "slice";
-    img.id = "slice" + i;
-    cheeseArea.appendChild(img);
-  }
+  let cheeseDiv = document.getElementById("cheese");
+  cheeseDiv.innerHTML = "🧀".repeat(slices);
 
   interval = setInterval(() => {
     remaining--;
@@ -117,16 +114,15 @@ function startTimer(minutes) {
       m + "m " + (s < 10 ? "0" + s : s) + "s";
 
     let eaten = Math.floor((totalSeconds - remaining) / sliceTime);
+    let left = slices - eaten;
+    if (left < 0) left = 0;
 
-    for (let i = 1; i <= eaten; i++) {
-      let slice = document.getElementById("slice" + i);
-      if (slice) slice.style.opacity = "0";
-    }
+    cheeseDiv.innerHTML = "🧀".repeat(left);
 
     if (remaining <= 0) {
       clearInterval(interval);
       document.getElementById("countdown").innerText =
-        "¡El ratón se comió todo el queso!";
+        "¡El ratón se comió todo el queso! 🐭🧀";
     }
   }, 1000);
 }
