@@ -6,7 +6,7 @@
 
 <style>
   body {
-    background:#fffae6;
+    background:#fff7d1;
     color:#333;
     font-family:Comic Sans MS, Arial;
     text-align:center;
@@ -42,10 +42,20 @@
     background:#ffdd66;
   }
 
+  #manual {
+    margin-top:20px;
+    font-size:20px;
+    padding:10px;
+    width:120px;
+    border-radius:10px;
+    border:2px solid #ffcc00;
+  }
+
   #mouse {
     font-size:80px;
     margin:20px;
     animation: mover 1s infinite alternate;
+    position:relative;
   }
 
   @keyframes mover {
@@ -54,15 +64,32 @@
   }
 
   #cheese {
-    font-size:60px;
+    font-size:50px;
     margin:20px;
     letter-spacing:10px;
+    min-height:80px;
   }
 
   #countdown {
     font-size:30px;
     margin-top:20px;
     color:#cc6600;
+  }
+
+  .explosion {
+    position:absolute;
+    animation: fly 1s ease-out forwards;
+  }
+
+  @keyframes fly {
+    from { transform:translate(0,0) scale(1); opacity:1; }
+    to { transform:translate(var(--x), var(--y)) scale(0.5); opacity:0; }
+  }
+
+  #house {
+    font-size:80px;
+    margin-top:30px;
+    display:none;
   }
 </style>
 </head>
@@ -84,22 +111,35 @@
   <button onclick="startTimer(60)">60 min</button>
 </div>
 
+<p style="font-size:20px;">O escribe tus minutos:</p>
+<input id="manual" type="number" min="1" placeholder="Minutos">
+<button onclick="manualStart()">Iniciar</button>
+
 <div id="mouse">🐭</div>
 
-<div id="cheese">🧀🧀🧀🧀🧀🧀</div>
+<div id="cheese"></div>
 
 <div id="countdown"></div>
+
+<div id="house">🏠</div>
 
 <script>
 let interval;
 
+function manualStart() {
+  let m = parseInt(document.getElementById("manual").value);
+  if (m > 0) startTimer(m);
+}
+
 function startTimer(minutes) {
   clearInterval(interval);
+
+  document.getElementById("house").style.display = "none";
 
   let totalSeconds = minutes * 60;
   let remaining = totalSeconds;
 
-  let slices = 6;
+  let slices = minutes * 6; // 6 trozos por minuto
   let sliceTime = totalSeconds / slices;
 
   let cheeseDiv = document.getElementById("cheese");
@@ -121,10 +161,35 @@ function startTimer(minutes) {
 
     if (remaining <= 0) {
       clearInterval(interval);
-      document.getElementById("countdown").innerText =
-        "¡El ratón se comió todo el queso! 🐭🧀";
+      finishAnimation();
     }
   }, 1000);
+}
+
+function finishAnimation() {
+  let cheeseDiv = document.getElementById("cheese");
+  cheeseDiv.innerHTML = "";
+
+  for (let i = 0; i < 12; i++) {
+    let piece = document.createElement("div");
+    piece.className = "explosion";
+    piece.style.left = "50%";
+    piece.style.top = "50%";
+    piece.style.setProperty("--x", (Math.random()*400-200)+"px");
+    piece.style.setProperty("--y", (Math.random()*400-200)+"px");
+    piece.innerText = "🧀";
+    document.body.appendChild(piece);
+
+    setTimeout(() => piece.remove(), 1000);
+  }
+
+  setTimeout(() => {
+    document.getElementById("house").style.display = "block";
+    document.getElementById("mouse").innerText = "🐭➡️🏠";
+  }, 1000);
+
+  document.getElementById("countdown").innerText =
+    "¡El ratón se comió todo el queso!";
 }
 </script>
 
