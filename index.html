@@ -123,6 +123,11 @@
 
 <div id="house">🏠</div>
 
+<!-- SONIDO DE ALARMA -->
+<audio id="alarmSound">
+  <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+</audio>
+
 <script>
 let interval;
 
@@ -135,6 +140,7 @@ function startTimer(minutes) {
   clearInterval(interval);
 
   document.getElementById("house").style.display = "none";
+  document.getElementById("mouse").innerText = "🐭";
 
   let totalSeconds = minutes * 60;
   let remaining = totalSeconds;
@@ -170,6 +176,10 @@ function finishAnimation() {
   let cheeseDiv = document.getElementById("cheese");
   cheeseDiv.innerHTML = "";
 
+  // SONIDO DE ALARMA
+  document.getElementById("alarmSound").play();
+
+  // Explosión de quesos
   for (let i = 0; i < 12; i++) {
     let piece = document.createElement("div");
     piece.className = "explosion";
